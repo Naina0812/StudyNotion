@@ -101,8 +101,9 @@ export default function Upload({
             </div>
             <p className="mt-2 max-w-[200px] text-center text-sm text-richblack-200">
               Drag and drop an {!video ? "image" : "video"}, or click to{" "}
-              <span className="font-semibold text-yellow-50">Browse</span> a
-              file
+              <span className="font-semibold text-yellow-50" style={{cursor:'pointer'}} onClick={() => inputRef.current && inputRef.current.click()}>
+                Browse
+              </span> a file
             </p>
             <ul className="mt-10 flex list-disc justify-between space-x-12 text-center  text-xs text-richblack-200">
               <li>Aspect ratio 16:9</li>

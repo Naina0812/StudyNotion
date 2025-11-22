@@ -4,16 +4,22 @@ const bcrypt = require("bcrypt")
 const crypto = require("crypto")
 exports.resetPasswordToken = async (req, res) => {
   try {
+    //get email from request ki body
     const email = req.body.email
+
+    //check user for this email, email validation
     const user = await User.findOne({ email: email })
+    // user nahi mila to dikkat hai 
     if (!user) {
       return res.json({
         success: false,
         message: `This Email: ${email} is not Registered With Us Enter a Valid Email `,
       })
     }
-    const token = crypto.randomBytes(20).toString("hex")
-
+    //create token
+    const token = crypto.randomUUID();
+    
+    // update token for that particular user
     const updatedDetails = await User.findOneAndUpdate(
       { email: email },
       {
@@ -23,9 +29,10 @@ exports.resetPasswordToken = async (req, res) => {
       { new: true }
     )
     console.log("DETAILS", updatedDetails)
-
-    // const url = `http://localhost:3000/update-password/${token}`
-    const url = `https://studynotion-edtech-project.vercel.app/update-password/${token}`
+    
+    // url for frontend jisme token send karna hai 
+    const url = `http://localhost:3000/update-password/${token}`
+    // const url = `https://studynotion-edtech-project.vercel.app/update-password/${token}`
 
     await mailSender(
       email,
@@ -49,6 +56,7 @@ exports.resetPasswordToken = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
   try {
+    // token ka use karke user ki entry nikalni hai
     const { password, confirmPassword, token } = req.body
 
     if (confirmPassword !== password) {
